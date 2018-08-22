@@ -10,7 +10,6 @@ def gen_action(agent_list, observation):
         action = np.random.randint(0, 5)
         next_pos = next_position(agent_loc[0], agent_loc[1], action)
         #print(agent_idx, agent_list[agent_idx].isAlive)
-        is_dangerous(agent_list[agent_idx], next_pos[0], next_pos[1], observation)
         for _ in range(num_trials_until_give_up-1):
             if not is_dangerous(agent_list[agent_idx], next_pos[0], next_pos[1], observation):
                 break
