@@ -7,6 +7,9 @@ import numpy as np
 import policy.patrol 
 import policy.random
 
+# my stupid roomba policy
+from policy.roomba import gen_action
+
 start_time = time.time()
 env = gym.make("cap-v0") # initialize the environment
 
@@ -20,24 +23,21 @@ observation = env.reset(map_size=20,
                         policy_blue=policy.patrol.PolicyGen(env.get_map, env.get_team_blue),
                         policy_red=policy.random.PolicyGen(env.get_map, env.get_team_red))
 
+
 while True:
     while not done:
         
-        #you are free to select a random action
-        # or generate an action using the policy
-        # or select an action manually
-        # and the apply the selected action to blue team
-        # or use the policy selected and provided in env.reset 
-        #action = env.action_space.sample()  # choose random action
-        #action = policy_blue.gen_action(env.team1,observation,map_only=env.team_home)
-        #action = [0, 0, 0, 0]
-        #observation, reward, done, info = env.step(action)
+        #env.render(mode="fast")
+        #print(f'Observation:\n {observation.T}')
+        # for agent in env.team_blue:
+        #     print(f'loc: {agent.get_loc()}')
+
+        actions = gen_action(env.team_blue, observation)
+        #print(f'action:\n {actions_h(actions)}')
         
-        observation, reward, done, info = env.step()  # feedback from environment
+        observation, reward, done, info = env.step(actions)  # feedback from environment
         
-        # render and sleep are not needed for score analysis
-        env.render(mode="fast")
-        time.sleep(.05)
+        #time.sleep(0.5)
         
         t += 1
         if t == 100000:

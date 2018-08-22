@@ -34,7 +34,7 @@ class PolicyGen:
             free_map (np.array): 2d map of static environment.
             agent_list (list): list of all friendly units.
         """
-        self.free_map = free_map 
+        self.free_map = free_map
         self.heading_right = [True] * len(agent_list) #: Attr to track directions.
         
     def gen_action(self, agent_list, observation, free_map=None):
