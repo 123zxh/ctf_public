@@ -28,13 +28,11 @@ observation = env.reset(map_size=20,
 while True:
     while not done:
         
-        env.render(mode="fast")
-        #print(observation.T)
+        #env.render(mode="fast")
+
         actions = roomba_policy.gen_action(env.team_blue, observation)
-        #print('\n')
         
         observation, reward, done, info = env.step(actions)  # feedback from environment
-        
         
         #time.sleep(2)
         

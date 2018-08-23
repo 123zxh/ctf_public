@@ -3,34 +3,38 @@ import numpy as np
 class PolicyGen:
 
     def __init__(self):
-        self.prev_actions = np.random.randint(0, 5, 4)
+        self.prev_actions = np.random.choice([2, 4], 4).tolist()
 
     def gen_action(self, agent_list, observation):
         
         actions = []
 
-        num_trials_until_give_up = 100
+        num_trials_until_give_up = 10
         for agent_idx in range(len(agent_list)):
             agent_loc = agent_list[agent_idx].get_loc()
-            # try the previous action first
+
             action = self.prev_actions[agent_idx]
-            if action == 0:
-                action = np.random.randint(0, 5)
+            if action == 3:
+                action = np.random.choice([2, 4])
+            next_x, next_y = self.next_position(agent_loc[0], agent_loc[1], action)
+            if self.is_obstacle(next_x, next_y, observation) and (action == 2 or action == 4):
+                action = 3
+                next_xx, next_yy = self.next_position(agent_loc[0], agent_loc[1], action)
+                if self.is_obstacle(next_xx, next_yy, observation):
+                    action = np.random.choice([0, 1])
+
             next_pos = self.next_position(agent_loc[0], agent_loc[1], action)
             for _ in range(num_trials_until_give_up-1):
                 if not self.is_dangerous(agent_list[agent_idx], next_pos[0], next_pos[1], observation):
                     break
                 else:
-                    action = np.random.randint(0, 5)
+                    action = np.random.choice([0, 1, 2, 3, 4], p=[0.1, 0.2, 0.15, 0.4, 0.15])
                     next_pos = self.next_position(agent_loc[0], agent_loc[1], action)
             
             actions.append(action)
 
         # update the previous actions
-        # for agent in agent_list:
-        #     print(agent.get_loc())
         self.prev_actions = actions
-        #print(self.actions_h(actions))
         return actions
 
     def next_position(self, x, y, action):
@@ -45,12 +49,12 @@ class PolicyGen:
         else:             # west ⬅️
             return x - 1, y
 
-    def is_dangerous(self, agent, next_x, next_y, observation):
+    def is_obstacle(self, next_x, next_y, observation):
         # the next position is out of bound
         if next_x < 0 or next_x >= len(observation) or next_y < 0 or next_y >= len(observation[0]):
             #print('the next position is out of bound')
             return True
-        
+
         # the next position is obstacle
         if observation[next_x][next_y] == 8:
             #print('next position is obstacle')
@@ -60,6 +64,12 @@ class PolicyGen:
         if observation[next_x][next_y] == 2:
             return True
 
+        return False
+
+    def is_dangerous(self, agent, next_x, next_y, observation):
+        if self.is_obstacle(next_x, next_y, observation):
+            return True
+        
         # the next position is my territory
         if observation[next_x][next_y] == 0:
             #print('next position is my territory')
