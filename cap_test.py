@@ -7,8 +7,9 @@ import numpy as np
 import policy.patrol 
 import policy.random
 
-# my stupid roomba policy
-from policy.roomba import gen_action
+# import the roomba policy
+from policy.roomba import PolicyGen
+roomba_policy = PolicyGen()
 
 start_time = time.time()
 env = gym.make("cap-v0") # initialize the environment
@@ -27,17 +28,15 @@ observation = env.reset(map_size=20,
 while True:
     while not done:
         
-        #env.render(mode="fast")
-        #print(f'Observation:\n {observation.T}')
-        # for agent in env.team_blue:
-        #     print(f'loc: {agent.get_loc()}')
-
-        actions = gen_action(env.team_blue, observation)
-        #print(f'action:\n {actions_h(actions)}')
+        env.render(mode="fast")
+        #print(observation.T)
+        actions = roomba_policy.gen_action(env.team_blue, observation)
+        #print('\n')
         
         observation, reward, done, info = env.step(actions)  # feedback from environment
         
-        #time.sleep(0.5)
+        
+        #time.sleep(2)
         
         t += 1
         if t == 100000:
