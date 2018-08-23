@@ -4,8 +4,13 @@ class PolicyGen:
 
     def __init__(self):
         self.prev_actions = np.random.choice([2, 4], 4).tolist()
+        self.cnt = 59
 
     def gen_action(self, agent_list, observation):
+        self.cnt -= 1
+        if self.cnt == 0:
+            self.cnt = 59
+            return np.random.randint(0, 5, 4).tolist()
         
         actions = []
 
