@@ -3,4 +3,4 @@
 *.egg
 .ipynb_checkpoints/
 .vscode/
-__pycache__/
+*.pyc
